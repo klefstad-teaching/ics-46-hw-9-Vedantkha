@@ -55,4 +55,26 @@ vector<string> generate_word_ladder(const string &begin_word,
   if (word_list.find(end_word) == word_list.end()) {
     error(begin_word, end_word, "End word not found in word list");
   }
-                                    }
+  queue<vector<string>> q;
+  q.push({begin_word});
+  set<string> visited;
+  visited.insert(begin_word);
+  while (!q.empty()) {
+    vector<string> path = q.front();
+    q.pop();
+    string last_word = path.back();
+    if (last_word == end_word) {
+      return path;
+    }
+    for (const string &word : word_list) {
+      if (is_adjacent(last_word, word) && visited.find(word) == visited.end()) {
+        // cout << " " << word;
+        visited.insert(word);
+        vector<string> new_path = path;
+        new_path.push_back(word);
+        q.push(new_path);
+      }
+    }
+  }
+  return {};
+}
