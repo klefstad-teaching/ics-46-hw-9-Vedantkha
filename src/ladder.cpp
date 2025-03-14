@@ -41,3 +41,18 @@ bool edit_distance_within(const string &str1, const string &str2, int d) {
   }
   return dp[n][m] <= d;
 }
+
+bool is_adjacent(const string &word1, const string &word2) {
+  return edit_distance_within(word1, word2, 1);
+}
+
+vector<string> generate_word_ladder(const string &begin_word,
+                                    const string &end_word,
+                                    const set<string> &word_list) {
+  if (begin_word == end_word) {
+    error(begin_word, end_word, "Words must be different");
+  }
+  if (word_list.find(end_word) == word_list.end()) {
+    error(begin_word, end_word, "End word not found in word list");
+  }
+                                    }
