@@ -21,4 +21,30 @@ int main() {
   //   cout << word << " ";
   // }
   // cout << endl;
+
+  cout << "edit_distance_within(" << first_word << ", " << second_word
+       << ", 1) : ";
+
+  (edit_distance_within(first_word, second_word, 1)) ? cout << "true"
+                                                     : cout << "false";
+  cout << endl;
+
+  cout << "edit_distance_within(" << first_word << ", " << second_word
+       << ", 3) : ";
+
+  (edit_distance_within(first_word, second_word, 3)) ? cout << "true"
+                                                     : cout << "false";
+  cout << endl;
+
+  vector<string> ladder =
+      generate_word_ladder(first_word, second_word, word_list);
+  print_word_ladder(ladder);
+
+  // set<string> word_list_full;
+  // load_words(word_list_full, "src/words.txt");
+  // vector<string> ladder2 = generate_word_ladder("hit", "cog",
+  // word_list_full); print_word_ladder(ladder2);
+  verify_word_ladder();
+
+  return 0;
 }
