@@ -16,4 +16,15 @@ vector<int> dijkstra_shortest_path(const Graph &G, int source,
     Q.pop();
     if (dist > distances[u])
       continue;
+    for (auto &&e : G[u]) {
+      int v = e.dst;
+      int w = e.weight;
+      if (dist + w < distances[v]) {
+        distances[v] = dist + w;
+        previous[v] = u;
+        Q.push({distances[v], v});
+      }
+    }
   }
+  return distances;
+}
