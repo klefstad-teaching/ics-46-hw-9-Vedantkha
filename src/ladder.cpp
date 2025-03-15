@@ -267,16 +267,16 @@ vector<string> generate_word_ladder(const string &begin_word,
           }
         }
       }
-    }
+    //}
     
     
     for (const auto &word : levelVisited) {
       visited.insert(word);
     }
-  }
+  // }
   
   return {};
-}
+// }
 
 
 void print_word_ladder(const vector<string> &ladder) {
