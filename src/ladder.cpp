@@ -1,4 +1,6 @@
 #include "ladder.h"
+#include <algorithm>
+#include <set>
 
 void error(string word1, string word2, string msg) {
   cout << "Error: " << word1 << " " << word2 << " " << msg << endl;
@@ -107,13 +109,16 @@ vector<string> generate_word_ladder(const string &begin_word,
     return {};
   }
   
-  if (word_list.find(end_word) == word_list.end()) {
-    error(begin_word, end_word, "End word not found in word list");
-  }
+  // if (word_list.find(end_word) == word_list.end()) {
+  //   error(begin_word, end_word, "End word not found in word list");
+  // }
+
+  set<string> modified_word_list = word_list;
   
   queue<vector<string>> q;
   q.push({begin_word});
   
+  modified_word_list.insert(end_word);
 
   set<string> visited;
   visited.insert(begin_word);
