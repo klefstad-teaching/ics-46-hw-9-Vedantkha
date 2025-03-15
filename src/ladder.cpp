@@ -109,23 +109,18 @@ vector<string> generate_word_ladder(const string &begin_word,
     return {};
   }
   
-  // if (word_list.find(end_word) == word_list.end()) {
-  //   error(begin_word, end_word, "End word not found in word list");
-  // }
-
+  
   set<string> modified_word_list = word_list;
+  modified_word_list.insert(end_word);
   
   queue<vector<string>> q;
   q.push({begin_word});
   
-  modified_word_list.insert(end_word);
-
   set<string> visited;
   visited.insert(begin_word);
   
-
   map<int, vector<string>> words_by_length;
-  for (const string &word : word_list) {
+  for (const string &word : modified_word_list) {
     words_by_length[word.length()].push_back(word);
   }
   for (auto &pair : words_by_length) {
@@ -133,88 +128,74 @@ vector<string> generate_word_ladder(const string &begin_word,
   }
   
   const int MAX_PATH_LENGTH = 15;
+  const int MAX_ITERATIONS = 50000;  
+  int iterations = 0;
   
-
-  while (!q.empty()) {
-    int levelSize = q.size();
-
-    set<string> levelVisited;
+  while (!q.empty() && iterations < MAX_ITERATIONS) {
+    iterations++;
     
-    for (int i = 0; i < levelSize; i++) {
-      vector<string> path = q.front();
-      q.pop();
-      
-      if (path.size() > MAX_PATH_LENGTH) {
-        continue;
-      }
-      
-      string last_word = path.back();
-      
-      if (last_word == end_word) {
-        return path;
-      }
-      
-      int len = last_word.length();
-      
-
-      if (words_by_length.find(len) != words_by_length.end()) {
-        for (const string &word : words_by_length[len]) {
-          if (visited.find(word) == visited.end() &&
-              levelVisited.find(word) == levelVisited.end() &&
-              is_adjacent(last_word, word)) {
-            vector<string> new_path = path;
-            new_path.push_back(word);
-            if (word == end_word) {
-              return new_path;
-            }
-            q.push(new_path);
-            levelVisited.insert(word);
+    vector<string> path = q.front();
+    q.pop();
+    
+    if (path.size() > MAX_PATH_LENGTH) {
+      continue;
+    }
+    
+    string last_word = path.back();
+    
+    if (last_word == end_word) {
+      return path;
+    }
+    
+    int len = last_word.length();
+    
+    // Check words of the same length
+    if (words_by_length.find(len) != words_by_length.end()) {
+      for (const string &word : words_by_length[len]) {
+        if (visited.find(word) == visited.end() && is_adjacent(last_word, word)) {
+          visited.insert(word);
+          vector<string> new_path = path;
+          new_path.push_back(word);
+          if (word == end_word) {
+            return new_path;
           }
-        }
-      }
-      
-
-      if (len > 1 && words_by_length.find(len - 1) != words_by_length.end()) {
-        for (const string &word : words_by_length[len - 1]) {
-          if (visited.find(word) == visited.end() &&
-              levelVisited.find(word) == levelVisited.end() &&
-              is_adjacent(last_word, word)) {
-            vector<string> new_path = path;
-            new_path.push_back(word);
-            if (word == end_word) {
-              return new_path;
-            }
-            q.push(new_path);
-            levelVisited.insert(word);
-          }
-        }
-      }
-      
-     
-      if (words_by_length.find(len + 1) != words_by_length.end()) {
-        for (const string &word : words_by_length[len + 1]) {
-          if (visited.find(word) == visited.end() &&
-              levelVisited.find(word) == levelVisited.end() &&
-              is_adjacent(last_word, word)) {
-            vector<string> new_path = path;
-            new_path.push_back(word);
-            if (word == end_word) {
-              return new_path;
-            }
-            q.push(new_path);
-            levelVisited.insert(word);
-          }
+          q.push(new_path);
         }
       }
     }
     
+    // Check words that are one character shorter
+    if (len > 1 && words_by_length.find(len - 1) != words_by_length.end()) {
+      for (const string &word : words_by_length[len - 1]) {
+        if (visited.find(word) == visited.end() && is_adjacent(last_word, word)) {
+          visited.insert(word);
+          vector<string> new_path = path;
+          new_path.push_back(word);
+          if (word == end_word) {
+            return new_path;
+          }
+          q.push(new_path);
+        }
+      }
+    }
     
-    for (const auto &word : levelVisited) {
-      visited.insert(word);
+    // Check words that are one character longer
+    if (words_by_length.find(len + 1) != words_by_length.end()) {
+      for (const string &word : words_by_length[len + 1]) {
+        if (visited.find(word) == visited.end() && is_adjacent(last_word, word)) {
+          visited.insert(word);
+          vector<string> new_path = path;
+          new_path.push_back(word);
+          if (word == end_word) {
+            return new_path;
+          }
+          q.push(new_path);
+        }
+      }
     }
   }
   
-  return {};
+  return {};  
 }
 
 // vector<string> generate_word_ladder(const string &begin_word,
