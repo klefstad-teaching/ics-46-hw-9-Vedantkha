@@ -109,9 +109,12 @@ vector<string> generate_word_ladder(const string &begin_word,
     return {};
   }
   
-  
+
+  if (word_list.find(end_word) == word_list.end()) {
+    return {};
+  }
+
   set<string> modified_word_list = word_list;
-  modified_word_list.insert(end_word);
   
   queue<vector<string>> q;
   q.push({begin_word});
@@ -149,7 +152,7 @@ vector<string> generate_word_ladder(const string &begin_word,
     
     int len = last_word.length();
     
-    // Check words of the same length
+
     if (words_by_length.find(len) != words_by_length.end()) {
       for (const string &word : words_by_length[len]) {
         if (visited.find(word) == visited.end() && is_adjacent(last_word, word)) {
@@ -164,7 +167,7 @@ vector<string> generate_word_ladder(const string &begin_word,
       }
     }
     
-    // Check words that are one character shorter
+
     if (len > 1 && words_by_length.find(len - 1) != words_by_length.end()) {
       for (const string &word : words_by_length[len - 1]) {
         if (visited.find(word) == visited.end() && is_adjacent(last_word, word)) {
@@ -179,7 +182,7 @@ vector<string> generate_word_ladder(const string &begin_word,
       }
     }
     
-    // Check words that are one character longer
+   
     if (words_by_length.find(len + 1) != words_by_length.end()) {
       for (const string &word : words_by_length[len + 1]) {
         if (visited.find(word) == visited.end() && is_adjacent(last_word, word)) {
@@ -197,6 +200,7 @@ vector<string> generate_word_ladder(const string &begin_word,
   
   return {};  
 }
+
 
 // vector<string> generate_word_ladder(const string &begin_word,
 //                                     const string &end_word,
