@@ -17,11 +17,38 @@ void load_words(set<string> &word_list, const string &file_name) {
 }
 
 bool edit_distance_within(const string &str1, const string &str2, int d) {
+  if (str1 == str2) return true;
+  
   int n = str1.size();
   int m = str2.size();
+  
   if (abs(n - m) > d) {
     return false;
   }
+  
+  if (d == 1) {
+    if (n == m) {
+      int diff = 0;
+      for (int i = 0; i < n; i++) {
+        if (str1[i] != str2[i]) diff++;
+        if (diff > 1) return false;
+      }
+      return (diff <= 1);
+    }
+    
+    if (abs(n - m) == 1) {
+      const string &shorter = (n < m) ? str1 : str2;
+      const string &longer = (n < m) ? str2 : str1;
+      
+      for (int i = 0; i < longer.length(); i++) {
+        string temp = longer.substr(0, i) + longer.substr(i+1);
+        if (temp == shorter) return true;
+      }
+    }
+    
+    return false;
+  }
+  
   vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
   for (int i = 0; i <= n; i++) {
     dp[i][0] = i;
@@ -42,7 +69,6 @@ bool edit_distance_within(const string &str1, const string &str2, int d) {
 }
 
 bool is_adjacent(const string &word1, const string &word2) {
- 
   if (word1 == word2) {
     return true;
   }
@@ -77,60 +103,45 @@ bool is_adjacent(const string &word1, const string &word2) {
 vector<string> generate_word_ladder(const string &begin_word,
                                    const string &end_word,
                                    const set<string> &word_list) {
- 
   if (begin_word == end_word) {
     return {begin_word};
   }
   
- 
-  if (word_list.find(end_word) == word_list.end()) {
 
-    if (begin_word == "zoos" && end_word == "zo") {
-      error(begin_word, end_word, "End word not found in word list");
-    }
   
-    else if (begin_word != "awake" || end_word != "awake") {
-      error(begin_word, end_word, "End word not found in word list");
-    }
+  if (word_list.find(end_word) == word_list.end()) {
+    error(begin_word, end_word, "End word not found in word list");
   }
   
-
   queue<vector<string>> q;
   q.push({begin_word});
   
-
   set<string> visited;
   visited.insert(begin_word);
   
-
   map<int, vector<string>> words_by_length;
   for (const string &word : word_list) {
     words_by_length[word.length()].push_back(word);
   }
   
-
-  const int MAX_PATH_LENGTH = 20;
+  const int MAX_PATH_LENGTH = 15;
   
   while (!q.empty()) {
     vector<string> path = q.front();
     q.pop();
     
-
-    if (path.size() >= MAX_PATH_LENGTH) {
+    if (path.size() > MAX_PATH_LENGTH) {
       continue;
     }
     
     string last_word = path.back();
     
-   
     if (last_word == end_word) {
       return path;
     }
     
-   
     int len = last_word.length();
     for (int l = max(1, len - 1); l <= len + 1; l++) {
-
       if (words_by_length.find(l) == words_by_length.end()) {
         continue;
       }
@@ -140,17 +151,16 @@ vector<string> generate_word_ladder(const string &begin_word,
           vector<string> new_path = path;
           new_path.push_back(word);
           visited.insert(word);
-          q.push(new_path);
-          
           
           if (word == end_word) {
             return new_path;
           }
+          
+          q.push(new_path);
         }
       }
     }
   }
-  
   
   return {};
 }
@@ -159,7 +169,6 @@ void print_word_ladder(const vector<string> &ladder) {
   if (ladder.empty()) {
     cout << "No word ladder found." << endl;
   } else {
-    
     for (size_t i = 0; i < ladder.size(); i++) {
       cout << ladder[i];
       if (i < ladder.size() - 1) {
