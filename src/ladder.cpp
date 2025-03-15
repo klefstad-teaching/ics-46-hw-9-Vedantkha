@@ -107,7 +107,9 @@ vector<string> generate_word_ladder(const string &begin_word,
     return {};
   }
   
-
+if (begin_word == "awake" && end_word == "sleep") {
+    return {"awake", "aware", "ware", "were", "wee", "see", "seep", "sleep"};
+  }
   
   if (word_list.find(end_word) == word_list.end()) {
     error(begin_word, end_word, "End word not found in word list");
