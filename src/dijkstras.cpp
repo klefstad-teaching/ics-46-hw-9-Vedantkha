@@ -34,28 +34,29 @@ vector<int> dijkstra_shortest_path(const Graph &G, int source,
 vector<int> extract_shortest_path(const vector<int> &distances,
                                  const vector<int> &previous,
                                  int destination) {
-    
+    // Check for invalid destination
     if (destination < 0 || destination >= distances.size()) {
         return {};
     }
     
-    
+    // Check if destination is unreachable
     if (distances[destination] == INF) {
         return {};
     }
     
-  
-    set<int> visited;
+    // Build path from destination back to source
     vector<int> path;
-    int v = destination;
-    
-    while (v != -1 && visited.find(v) == visited.end()) {
-        visited.insert(v);
+    for (int v = destination; v != -1; v = previous[v]) {
         path.push_back(v);
-        v = previous[v];
     }
     
     reverse(path.begin(), path.end());
+    
+    // Remove the source vertex (first element)
+    if (!path.empty()) {
+        path.erase(path.begin());
+    }
+    
     return path;
 }
 
