@@ -184,6 +184,33 @@ bool is_adjacent(const string &word1, const string &word2) {
 //           }
 //         }
 //       }
+      
+     
+//       if (words_by_length.find(len + 1) != words_by_length.end()) {
+//         for (const string &word : words_by_length[len + 1]) {
+//           if (visited.find(word) == visited.end() &&
+//               levelVisited.find(word) == levelVisited.end() &&
+//               is_adjacent(last_word, word)) {
+//             vector<string> new_path = path;
+//             new_path.push_back(word);
+//             if (word == end_word) {
+//               return new_path;
+//             }
+//             q.push(new_path);
+//             levelVisited.insert(word);
+//           }
+//         }
+//       }
+//     }
+    
+    
+//     for (const auto &word : levelVisited) {
+//       visited.insert(word);
+//     }
+//   }
+  
+//   return {};
+// }
 
 vector<string> generate_word_ladder(const string &begin_word,
                                     const string &end_word,
@@ -191,6 +218,7 @@ vector<string> generate_word_ladder(const string &begin_word,
   if (begin_word == end_word) {
     return {begin_word};  
   }
+  
 
   if (word_list.find(end_word) == word_list.end()) {
     error(begin_word, end_word, "End word not found in word list");
@@ -202,7 +230,7 @@ vector<string> generate_word_ladder(const string &begin_word,
   set<string> visited;
   visited.insert(begin_word);
   
-  
+
   map<int, vector<string>> words_by_length;
   for (const string &word : word_list) {
     words_by_length[word.length()].push_back(word);
@@ -226,12 +254,12 @@ vector<string> generate_word_ladder(const string &begin_word,
     
     int len = last_word.length();
     
-
+    
     for (int l = max(1, len - 1); l <= len + 1; l++) {
       if (words_by_length.find(l) != words_by_length.end()) {
         for (const string &word : words_by_length[l]) {
           if (visited.find(word) == visited.end() && is_adjacent(last_word, word)) {
-         
+            
             visited.insert(word);
             
             vector<string> new_path = path;
@@ -250,34 +278,6 @@ vector<string> generate_word_ladder(const string &begin_word,
   
   return {};  
 }
-      
-     
-      if (words_by_length.find(len + 1) != words_by_length.end()) {
-        for (const string &word : words_by_length[len + 1]) {
-          if (visited.find(word) == visited.end() &&
-              levelVisited.find(word) == levelVisited.end() &&
-              is_adjacent(last_word, word)) {
-            vector<string> new_path = path;
-            new_path.push_back(word);
-            if (word == end_word) {
-              return new_path;
-            }
-            q.push(new_path);
-            levelVisited.insert(word);
-          }
-        }
-      }
-    //}
-    
-    
-    for (const auto &word : levelVisited) {
-      visited.insert(word);
-    }
-  // }
-  
-  return {};
-// }
-
 
 void print_word_ladder(const vector<string> &ladder) {
   if (ladder.empty()) {
