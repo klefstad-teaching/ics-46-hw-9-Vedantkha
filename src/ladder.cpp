@@ -47,35 +47,49 @@ bool is_adjacent(const string &word1, const string &word2) {
 }
 
 vector<string> generate_word_ladder(const string &begin_word,
-                                    const string &end_word,
-                                    const set<string> &word_list) {
+                                  const string &end_word,
+                                  const set<string> &word_list) {
   if (begin_word == end_word) {
     error(begin_word, end_word, "Words must be different");
   }
   if (word_list.find(end_word) == word_list.end()) {
     error(begin_word, end_word, "End word not found in word list");
   }
+  
   queue<vector<string>> q;
   q.push({begin_word});
   set<string> visited;
   visited.insert(begin_word);
+  
+  
+  map<int, vector<string>> words_by_length;
+  for (const string &word : word_list) {
+    words_by_length[word.length()].push_back(word);
+  }
+  
   while (!q.empty()) {
     vector<string> path = q.front();
     q.pop();
     string last_word = path.back();
+    
     if (last_word == end_word) {
       return path;
     }
-    for (const string &word : word_list) {
-      if (is_adjacent(last_word, word) && visited.find(word) == visited.end()) {
-        // cout << " " << word;
-        visited.insert(word);
-        vector<string> new_path = path;
-        new_path.push_back(word);
-        q.push(new_path);
+    
+    int len = last_word.length();
+    
+    for (int l = max(1, len - 1); l <= len + 1; l++) {
+      for (const string &word : words_by_length[l]) {
+        if (visited.find(word) == visited.end() && is_adjacent(last_word, word)) {
+          visited.insert(word);
+          vector<string> new_path = path;
+          new_path.push_back(word);
+          q.push(new_path);
+        }
       }
     }
   }
+  
   return {};
 }
 
@@ -83,6 +97,7 @@ void print_word_ladder(const vector<string> &ladder) {
   if (ladder.empty()) {
     cout << "No word ladder found." << endl;
   } else {
+    cout << "Word ladder found: ";
     for (const string &word : ladder) {
       cout << word << " ";
     }
